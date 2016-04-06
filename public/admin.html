@@ -1,0 +1,16 @@
+    <div id="post-stream">
+        <div ng-show="authenticated">
+        <h4>User Lists</h4>
+        </div>
+        <div class="post" ng-repeat="user in users | orderBy:'created_at':true" ng-class-odd="'odd'" ng-class-even="'even'" ng-show="authenticated">
+            <p>Username   : {{user.username}}</p>
+            <p>First Name : {{user.firstname}}</p>
+            <p>Last Name  : {{user.lastname}}</p>
+            <p>Created at : {{user.created_at | date:"h:mma 'on' MMM d, y"}}</p>
+           <!-- <small>Posted by @{{post.created_by}}</small>
+            <small class="pull-right">{{post.created_at | date:"h:mma 'on' MMM d, y"}}</small>-->
+        </div>
+        <div ng-hide="authenticated">
+            <h4>You are not authorized to see this page, please log in as administrator</h4>
+        </div>
+    </div>
