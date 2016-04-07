@@ -17,7 +17,7 @@ if (process.env.DEV_ENV){
     //connect to Mongo localhost
     mongoose.connect('mongodb://localhost/test-chirp');    
 }else{
-    mongoose.connect('mongodb://<dbuser>:<dbpassword>@ds017070.mlab.com:17070/test-chirp');
+    mongoose.connect('mongodb://admin:admin@ds017070.mlab.com:17070/test-chirp');
 }
 
 var app = express();
