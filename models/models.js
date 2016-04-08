@@ -12,6 +12,7 @@ var userSchema = new mongoose.Schema({
 	password: String, //hash created from password
     firstname: String,
     lastname: String,
+    admin: Boolean,
 	created_at: {type: Date, default: Date.now}
 })
 
