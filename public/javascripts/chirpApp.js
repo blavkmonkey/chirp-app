@@ -1,10 +1,12 @@
 var app = angular.module ('chirpApp',['ngRoute', 'ngResource']).run(function($rootScope, $http){
     $rootScope.authenticated = false;
+    $rootScope.administrator = false;
     $rootScope.current_user = "";
     
     $rootScope.signout = function(){
         $http.get('/auth/signout')
         $rootScope.authenticated = false;
+        $rootScope.administrator = false;
         $rootScope.current_user = "";
     }
 });
@@ -29,7 +31,7 @@ app.config(function($routeProvider){
     //admin page display
     .when('/admin', {
       templateUrl: 'admin.html',
-      controller: 'mainController'
+      controller: 'userController'
     });
 });
 
@@ -37,10 +39,15 @@ app.factory('postService',function($resource){
     return $resource('/api/posts/:id');
 });
 
-app.factory('userService',function($resource){
-    return $resource('/api/users');
+// app.factory('userService',function($resource){
+//     return $resource('/api/users/:id');
+// });
+app.factory('userService', function($resource){
+  return $resource('/api/users/:id', null,
+                  {
+      'update':{method:'PUT'}
+  });
 });
-
 app.controller('mainController',function ($scope, $rootScope, postService, userService) {
     $scope.posts = postService.query();
     $scope.newPost = {created_by:'',text:'',created_at:''};
@@ -55,7 +62,14 @@ app.controller('mainController',function ($scope, $rootScope, postService, userS
               
         });        
     };
+});
+app.controller('userController',function ($scope, $rootScope, userService) {
     $scope.users = userService.query();
+    $scope.delete = function(user){
+        userService.delete({id: user._id}, function(){
+        $scope.users = userService.query();
+        });
+    };
 });
 
 app.controller('authController',function($scope, $rootScope, $http, $location){
@@ -67,6 +81,9 @@ app.controller('authController',function($scope, $rootScope, $http, $location){
           if (data.state == 'success') {
               $rootScope.authenticated = true;
               $rootScope.current_user = data.user.username;
+              if (data.user.admin) {
+                  $rootScope.administrator = true;
+              }
               $location.path('/'); 
            }else{
               $scope.error_message = data.message;
@@ -79,6 +96,9 @@ app.controller('authController',function($scope, $rootScope, $http, $location){
            if (data.state == 'success'){
                $rootScope.authenticated = true;
                $rootScope.current_user = data.user.username;
+              if (data.user.admin) {
+                  $rootScope.administrator = true;
+              }
                $location.path('/');           
            }else{
                $scope.error_message = data.message;

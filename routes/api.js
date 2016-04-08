@@ -101,5 +101,24 @@ router.route('/users')
 		});
 	});
 
+router.route('/users/:id')
+	//gets all user
+	.get(function(req, res){
+		User.findById(req.params.id, function(err, post){
+			if(err)
+				res.send(err);
+			res.json(post);
+		});
+	}) 
+	//deletes the post
+	.delete(function(req, res) {
+		User.remove({
+			_id: req.params.id
+		}, function(err) {
+			if (err)
+				res.send(err);
+			res.json("user deleted");
+		});
+	});
 
 module.exports = router;
